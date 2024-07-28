@@ -1,14 +1,27 @@
-const { createServer } = require("node:http");
+require("dotenv").config();
+const express = require("express");
+const configViewEngine = require("./src/config/viewEngine");
+const webRoutes = require("./src/routes/web");
+const connection = require("./src/config/database");
+const app = express();
+const port = process.env.PORT || 8888;
 
-const hostname = "localhost";
-const port = 8080;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const server = createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello Nodejs");
-});
+//config template engine
+configViewEngine(app);
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+// Route
+app.use("/", webRoutes);
+
+// test connection
+
+// query
+// connection.query("select * from Users u;", function (err, results, fields) {
+//   console.log("results", results), console.log("err", err);
+// });
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
 });
